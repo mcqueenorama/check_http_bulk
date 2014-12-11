@@ -41,7 +41,12 @@ func get(hostname string, port int, path string, auth string, verbose bool, time
 	// had to allocate this or the SetBasicAuth below causes a panic
     headers := make(map[string][]string)
     hostPort := fmt.Sprintf("%s:%d", hostname, port)
-    fmt.Fprintf(os.Stderr, "adding hostPort:%s:%d:path:%s:\n", hostname, port, path)
+
+    if verbose {
+
+	    fmt.Fprintf(os.Stderr, "adding hostPort:%s:%d:path:%s:\n", hostname, port, path)
+
+    }
 	req := &http.Request{
 		Method: "HEAD",
 		// Host:  hostPort,
@@ -56,7 +61,12 @@ func get(hostname string, port int, path string, auth string, verbose bool, time
     if auth != "" {
 
     	up := strings.SplitN(auth, ":", 2)
-	    fmt.Fprintf(os.Stderr, "Doing auth with:username:%s:password:%s:", up[0], up[1])
+
+    	if verbose {
+
+		    fmt.Fprintf(os.Stderr, "Doing auth with:username:%s:password:%s:", up[0], up[1])
+
+    	}
 		req.SetBasicAuth(up[0], up[1])
 
     }
@@ -109,6 +119,8 @@ func main() {
 	name := "Bulk HTTP"
 	bad := 0
 	total := 0
+	// badHosts := make([]byte,33, 99)
+	badHosts := []byte("  ")
 
 	verbose := flag.Bool("v", false, "verbose output")
 	warn := flag.Int("w", 10, "warning level - number of non-200s or percentage of non-200s (default is numeric not percentage)")
@@ -223,6 +235,8 @@ func main() {
 		}
 
 		if !goodCheck {
+			badHosts = append(badHosts, hostname...)
+			badHosts = append(badHosts, ", "...)
 			bad++
 		}
 
@@ -240,6 +254,6 @@ func main() {
 		rv = 2
 	}
 
-	fmt.Printf("%s %s: %d\n", name, status, bad)
+	fmt.Printf("%s %s: %d |%s\n", name, status, bad, badHosts[:len(badHosts) - 2] )
 	os.Exit(rv)
 }
