@@ -11,9 +11,10 @@ import (
 	"io/ioutil"
 	"flag"
 	"time"
+	"strings"
 )
 
-func get(hostname string, port int, path string, verbose bool, timeout int) (rv bool, err error) {
+func get(hostname string, port int, path string, auth string, verbose bool, timeout int) (rv bool, err error) {
 
 	// defer func() {
 	// 	if err := recover(); err != nil {
@@ -24,7 +25,7 @@ func get(hostname string, port int, path string, verbose bool, timeout int) (rv 
 	rv = true
 
 	if verbose {
-		fmt.Fprintf(os.Stderr, "fetching:url:%s:\n", hostname)
+		fmt.Fprintf(os.Stderr, "fetching:hostname:%s:\n", hostname)
 	}
 
 	client := &http.Client{Timeout: time.Duration(timeout) * time.Second}
@@ -52,10 +53,20 @@ func get(hostname string, port int, path string, verbose bool, timeout int) (rv 
 		Header: headers,
 	}
 
-	req.SetBasicAuth("guest", "guest")
+    if auth != "" {
 
-    dump, err := httputil.DumpRequestOut(req, true)
-    fmt.Fprintf(os.Stderr, "%s", dump)
+    	up := strings.SplitN(auth, ":", 2)
+	    fmt.Fprintf(os.Stderr, "Doing auth with:username:%s:password:%s:", up[0], up[1])
+		req.SetBasicAuth(up[0], up[1])
+
+    }
+
+    if verbose {
+
+	    dump, _ := httputil.DumpRequestOut(req, true)
+	    fmt.Fprintf(os.Stderr, "%s", dump)
+    	
+    }
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -74,9 +85,13 @@ func get(hostname string, port int, path string, verbose bool, timeout int) (rv 
 	// 	return
 	// }
 
-	fmt.Println(res.Status)
-	for k, v := range res.Header {
-		fmt.Println(k+":", v)
+	if verbose {
+
+		fmt.Println(res.Status)
+		for k, v := range res.Header {
+			fmt.Println(k+":", v)
+		}
+
 	}
 
 	if res.StatusCode != http.StatusOK {
@@ -104,6 +119,7 @@ func main() {
 	file := flag.String("file", "", "optional path to read data from a file instead of stdin.  If its a dash then read from stdin - these will not be urlencoded")
 	port := flag.Int("port", 80, "optional port for the http request")
 	// bare := flag.Bool("urls", false, "Assume the input data is full urls - its normally a list of hostnames")
+	auth := flag.String("auth", "", "Do basic auth with this username:passwd - make this use .netrc instead")
 
 	flag.Usage = func() {
 
@@ -196,10 +212,10 @@ func main() {
 
 		}
 
-		goodCheck, err := get(hostname, *port, *path, *verbose, *timeout)
+		goodCheck, err := get(hostname, *port, *path, *auth, *verbose, *timeout)
 		if err != nil {
 
-			fmt.Printf("%s Unknown: %T %s %#v\n", name, err, err, err)
+			fmt.Printf("%s get error: %T %s %#v\n", name, err, err, err)
 
 			// os.Exit(3)
 			continue
