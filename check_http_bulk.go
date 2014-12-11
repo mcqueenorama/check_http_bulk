@@ -30,7 +30,6 @@ func get(hostname string, port int, path string, verbose bool, timeout int) (rv 
 	client := &http.Client{Timeout: time.Duration(timeout) * time.Second}
 	// res, err := client.Head(url)
 
-
 	// req, err := http.NewRequest("HEAD", url, nil)
 	
 	// if err != nil {
@@ -44,7 +43,7 @@ func get(hostname string, port int, path string, verbose bool, timeout int) (rv 
     fmt.Fprintf(os.Stderr, "adding hostPort:%s:%d:path:%s:\n", hostname, port, path)
 	req := &http.Request{
 		Method: "HEAD",
-		// Host:  hostPort, // takes precendence over URL.Host
+		// Host:  hostPort,
 		URL: &url.URL{
 			Host:   hostPort,
 			Scheme: "http",
@@ -53,8 +52,6 @@ func get(hostname string, port int, path string, verbose bool, timeout int) (rv 
 		Header: headers,
 	}
 
-    // req.URL.Opaque = "/%2f/"
-    // req.URL.Opaque = path
 	req.SetBasicAuth("guest", "guest")
 
     dump, err := httputil.DumpRequestOut(req, true)
@@ -218,14 +215,6 @@ func main() {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
 	}
 
-	// jobs, err := get_content(url, new(Repositories), *verbose)
-	// if err != nil {
-
-	// 	fmt.Printf("%s Unknown: %T %s %#v\n", name, err, err, err)
-
-	// 	os.Exit(3)
-
-	// }
 
 	if bad >= *crit {
 		status = "Critical"
