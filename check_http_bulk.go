@@ -254,7 +254,13 @@ func main() {
 	if *pct {
 
 		ratio := int(float64(bad)/float64(total)*100)
-		fmt.Fprintln(os.Stderr, "ratio:%d:\n", ratio)
+
+		if *verbose {
+
+			fmt.Fprintf(os.Stderr, "ratio:%d:\n", ratio)
+
+		}
+
 		if ratio >= *crit {
 			status = "Critical"
 			rv = 1

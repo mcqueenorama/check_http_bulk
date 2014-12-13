@@ -33,12 +33,12 @@ or:
     cat urls.txt | ./check_http_bulk -urls -file -
 
 
-Next
-====
+Error on Percentage of Failure
+==============================
 
-It will be like this with percentages of failures on the alert thresholds:
+If you want to use percentage of failures instead of an numeric threshold:
 
-    cat arbitraryUrls.txt |  ./check_http_bulk  -w 33 -c 66
+    cat arbitraryUrls.txt |  ./check_http_bulk  -pct -w 33 -c 66
 
 
 
