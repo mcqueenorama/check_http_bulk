@@ -36,8 +36,6 @@ func get(hostname string, port int, path string, auth string, urls bool, verbose
 		res, err = http.Head(url)
 		defer res.Body.Close()
 
-		// req, err = http.NewRequest("HEAD", url, nil)
-
 		if err != nil {
 			fmt.Println(err.Error())
 			rv = false
@@ -189,7 +187,6 @@ func main() {
 		os.Exit(3)
 	}
 
-	// inputSource := &io.Reader
 	inputSource := os.Stdin
 
 	if (*file)[0] != "-"[0] {
