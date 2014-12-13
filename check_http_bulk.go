@@ -16,11 +16,11 @@ import (
 
 func get(hostname string, port int, path string, auth string, urls bool, verbose bool, timeout int) (rv bool, err error) {
 
-	// defer func() {
-	// 	if err := recover(); err != nil {
-	// 		return
-	// 	}
-	// }()
+	defer func() {
+		if err := recover(); err != nil {
+			return
+		}
+	}()
 
 	rv = true
 
@@ -100,13 +100,6 @@ func get(hostname string, port int, path string, auth string, urls bool, verbose
 
 	}
 
-	// res, err := http.Head(url)
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// 	rv = false
-	// 	return
-	// }
-
 	if verbose {
 
 		fmt.Println(res.Status)
@@ -184,12 +177,12 @@ func main() {
 		*path = ""
 	}
 
-	// defer func() {
-	// 	if err := recover(); err != nil {
-	// 		fmt.Println(name+" Unknown: ", err)
-	// 		os.Exit(3)
-	// 	}
-	// }()
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(name+" Unknown: ", err)
+			os.Exit(3)
+		}
+	}()
 
 	if file == nil || *file == "" {
 		flag.Usage()
@@ -257,6 +250,8 @@ func main() {
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
+		status = "Unknown"
+		rv = 3
 	}
 
 	if bad >= *crit {
