@@ -129,7 +129,7 @@ func main() {
 	warn := flag.Int("w", 10, "warning level - number of non-200s or percentage of non-200s (default is numeric not percentage)")
 	crit := flag.Int("c", 20, "critical level - number of non-200s or percentage of non-200s (default is numeric not percentage)")
 	timeout := flag.Int("t", 2, "timeout in seconds - don't wait.  Do Head requests and don't wait.")
-	// pct := flag.Bool("pct", false, "interpret warming and critical levels are percentages")
+	pct := flag.Bool("pct", false, "interpret warming and critical levels are percentages")
 	path := flag.String("path", "", "optional path to append to the stdin lines - these will not be urlencoded. This is ignored is the urls option is given (not implemented yet).")
 	file := flag.String("file", "", "optional path to read data from a file instead of stdin.  If its a dash then read from stdin - these will not be urlencoded")
 	port := flag.Int("port", 80, "optional port for the http request - ignored if urls is specified")
@@ -251,14 +251,30 @@ func main() {
 		rv = 3
 	}
 
-	if bad >= *crit {
-		status = "Critical"
-		rv = 1
-	} else if bad >= *warn {
-		status = "Warning"
-		rv = 2
+	if *pct {
+
+		ratio := int(float64(bad)/float64(total)*100)
+		fmt.Fprintln(os.Stderr, "ratio:%d:\n", ratio)
+		if ratio >= *crit {
+			status = "Critical"
+			rv = 1
+		} else if ratio >= *warn {
+			status = "Warning"
+			rv = 2
+		}
+
+	} else {
+
+		if bad >= *crit {
+			status = "Critical"
+			rv = 1
+		} else if bad >= *warn {
+			status = "Warning"
+			rv = 2
+		}
+
 	}
 
-	fmt.Printf("%s %s: %d |%s\n", name, status, bad, badHosts[:len(badHosts)-2])
+	fmt.Printf("%s %s: %d of %d |%s\n", name, status, bad, total, badHosts[:len(badHosts)-2])
 	os.Exit(rv)
 }
