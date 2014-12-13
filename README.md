@@ -18,11 +18,23 @@ or:
 
 The return is standard Nagios check format, showing failed hosts if there are any:
 
+Hostnames/IPs on STDIN
+==================
+If working in a cloud provisioned environment its useful to get the ips of a cluster from an api and pipe them into this command to check the health of the cluster as shown above.
+
+Urls on STDIN
+=============
+For general use its helpful to take a list of interesting urls and pipe them into this check to see how healthy the entire group is:
+
+    ./check_http_bulk -urls -file urls.txt
+
+or:
+
+    cat urls.txt | ./check_http_bulk -urls -file -
+
+
 Next
 ====
-
-I intend to add a mode where the full url is specified in the input
-file, so arbitary batches of urls can be checked in an easy way.
 
 It will be like this with percentages of failures on the alert thresholds:
 
