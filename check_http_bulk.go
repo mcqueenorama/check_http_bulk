@@ -3,15 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 	// "io"
-	"io/ioutil"
 	"flag"
-	"time"
+	"io/ioutil"
 	"strings"
+	"time"
 )
 
 func get(hostname string, port int, path string, auth string, urls bool, verbose bool, timeout int) (rv bool, err error) {
@@ -37,7 +37,7 @@ func get(hostname string, port int, path string, auth string, urls bool, verbose
 		defer res.Body.Close()
 
 		// req, err = http.NewRequest("HEAD", url, nil)
-		
+
 		if err != nil {
 			fmt.Println(err.Error())
 			rv = false
@@ -49,14 +49,14 @@ func get(hostname string, port int, path string, auth string, urls bool, verbose
 		client := &http.Client{Timeout: time.Duration(timeout) * time.Second}
 
 		// had to allocate this or the SetBasicAuth will panic
-	    headers := make(map[string][]string)
-	    hostPort := fmt.Sprintf("%s:%d", hostname, port)
+		headers := make(map[string][]string)
+		hostPort := fmt.Sprintf("%s:%d", hostname, port)
 
-	    if verbose {
+		if verbose {
 
-		    fmt.Fprintf(os.Stderr, "adding hostPort:%s:%d:path:%s:\n", hostname, port, path)
+			fmt.Fprintf(os.Stderr, "adding hostPort:%s:%d:path:%s:\n", hostname, port, path)
 
-	    }
+		}
 		req := &http.Request{
 			Method: "HEAD",
 			// Host:  hostPort,
@@ -68,25 +68,25 @@ func get(hostname string, port int, path string, auth string, urls bool, verbose
 			Header: headers,
 		}
 
-	    if auth != "" {
+		if auth != "" {
 
-	    	up := strings.SplitN(auth, ":", 2)
+			up := strings.SplitN(auth, ":", 2)
 
-	    	if verbose {
+			if verbose {
 
-			    fmt.Fprintf(os.Stderr, "Doing auth with:username:%s:password:%s:", up[0], up[1])
+				fmt.Fprintf(os.Stderr, "Doing auth with:username:%s:password:%s:", up[0], up[1])
 
-	    	}
+			}
 			req.SetBasicAuth(up[0], up[1])
 
-	    }
+		}
 
-	    if verbose {
+		if verbose {
 
-		    dump, _ := httputil.DumpRequestOut(req, true)
-		    fmt.Fprintf(os.Stderr, "%s", dump)
-	    	
-	    }
+			dump, _ := httputil.DumpRequestOut(req, true)
+			fmt.Fprintf(os.Stderr, "%s", dump)
+
+		}
 
 		res, err = client.Do(req)
 		if err != nil {
@@ -123,7 +123,6 @@ func get(hostname string, port int, path string, auth string, urls bool, verbose
 	return
 }
 
-
 func main() {
 
 	status := "OK"
@@ -148,8 +147,8 @@ func main() {
 
 	flag.Usage = func() {
 
-        fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
-        fmt.Fprintf(os.Stderr, `
+		fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, `
 	Read hostnames from a file or STDIN and do a single nagios check over
 	them all.  Just check for 200s.  Warning and Critical are either
 	percentages of the total, or a regular numeric thresholds.
@@ -168,7 +167,7 @@ func main() {
 
     	`)
 
-        flag.PrintDefaults()
+		flag.PrintDefaults()
 	}
 
 	flag.Parse()
@@ -260,7 +259,6 @@ func main() {
 		fmt.Fprintln(os.Stderr, "reading standard input:", err)
 	}
 
-
 	if bad >= *crit {
 		status = "Critical"
 		rv = 1
@@ -269,6 +267,6 @@ func main() {
 		rv = 2
 	}
 
-	fmt.Printf("%s %s: %d |%s\n", name, status, bad, badHosts[:len(badHosts) - 2] )
+	fmt.Printf("%s %s: %d |%s\n", name, status, bad, badHosts[:len(badHosts)-2])
 	os.Exit(rv)
 }
