@@ -38,7 +38,7 @@ Error on Percentage of Failure
 
 If you want to use percentage of failures instead of an numeric threshold:
 
-    cat arbitraryUrls.txt |  ./check_http_bulk  -pct -w 33 -c 66
+    cat arbitraryUrls.txt |  ./check_http_bulk  -pct -w 33 -c 66 -file -
 
 
 
