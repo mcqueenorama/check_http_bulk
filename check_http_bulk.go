@@ -118,7 +118,7 @@ func main() {
 
 	status := "OK"
 	rv := 0
-	name := "Bulk HTTP"
+	name := "Bulk HTTP Check"
 	bad := 0
 	total := 0
 
@@ -135,6 +135,7 @@ func main() {
 	port := flag.Int("port", 80, "optional port for the http request - ignored if urls is specified")
 	urls := flag.Bool("urls", false, "Assume the input data is full urls - its normally a list of hostnames")
 	auth := flag.String("auth", "", "Do basic auth with this username:passwd - ignored if urls is specified - make this use .netrc instead")
+	checkName := flag.String("name", "", "a name to be included in the check output to distinguish the check output")
 
 	flag.Usage = func() {
 
@@ -152,9 +153,9 @@ func main() {
 	Do Head requests since we don't care about the content.  Make this
 	optional some day.
 
-	Also make this read from a file of urls with a -f option.
+	The -path is appended to the hostnames to make full URLs for the checks.
 
-	Make the auth configurable from the cli
+	If the -urls option is specified, then the input is assumed a complete URLs, with  hostname:port/path.
 
     	`)
 
@@ -173,6 +174,10 @@ func main() {
 	// it urls is specified, the input is full urls to be used enmasse and to be url encoded
 	if *urls {
 		*path = ""
+	}
+
+	if *checkName != "" {
+		name = *checkName
 	}
 
 	defer func() {
