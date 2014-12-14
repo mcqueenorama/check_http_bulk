@@ -43,8 +43,6 @@ If you want to use percentage of failures instead of an numeric threshold:
 Help
 ====
 
-	Help:
-
 	bash-3.2$   ./check_http_bulk   -help
 
     Usage of ./check_http_bulk:
