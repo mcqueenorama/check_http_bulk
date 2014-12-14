@@ -130,8 +130,8 @@ func main() {
 	crit := flag.Int("c", 20, "critical level - number of non-200s or percentage of non-200s (default is numeric not percentage)")
 	timeout := flag.Int("t", 2, "timeout in seconds - don't wait.  Do Head requests and don't wait.")
 	pct := flag.Bool("pct", false, "interpret warming and critical levels are percentages")
-	path := flag.String("path", "", "optional path to append to the stdin lines - these will not be urlencoded. This is ignored is the urls option is given (not implemented yet).")
-	file := flag.String("file", "", "optional path to read data from a file instead of stdin.  If its a dash then read from stdin - these will not be urlencoded")
+	path := flag.String("path", "", "optional path to append to the input lines including the leading slash - these will not be urlencoded. This is ignored is the urls option is given.")
+	file := flag.String("file", "", "input data source: a filename or '-' for STDIN.")
 	port := flag.Int("port", 80, "optional port for the http request - ignored if urls is specified")
 	urls := flag.Bool("urls", false, "Assume the input data is full urls - its normally a list of hostnames")
 	auth := flag.String("auth", "", "Do basic auth with this username:passwd - ignored if urls is specified - make this use .netrc instead")
@@ -155,9 +155,15 @@ func main() {
 
 	The -path is appended to the hostnames to make full URLs for the checks.
 
-	If the -urls option is specified, then the input is assumed a complete URLs, with  hostname:port/path.
+	If the -urls option is specified, then the input is assumed a complete URLs, like http://$hostname:$port/$path.
 
-    	`)
+	Examples:
+
+	./someCommand |  ./check_http_bulk  -w 1 -c 2 -path '/api/aliveness-test/%%2F/' -port 15672 -file - -auth zup:nuch 
+
+	./check_http_bulk -urls -file urls.txt
+
+`)
 
 		flag.PrintDefaults()
 	}
