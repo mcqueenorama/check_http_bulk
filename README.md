@@ -18,6 +18,10 @@ or:
 
 The return is standard Nagios check format, showing failed hosts if there are any:
 
+    bash-3.2$ ./check_http_bulk -urls -file urls.txt -w 1 -c 2
+    Bulk HTTP Check Warning: 1 of 2 |  http://zup.com/nuch
+    bash-3.2$
+
 Hostnames/IPs on STDIN
 ==================
 If working in a cloud provisioned environment its useful to get the ips of a cluster from an api and pipe them into this command to check the health of the cluster as shown above.
