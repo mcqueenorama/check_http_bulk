@@ -244,6 +244,9 @@ func main() {
 		if err != nil {
 
 			fmt.Printf("%s get error: %T %s %#v\n", name, err, err, err)
+			badHosts = append(badHosts, hostname...)
+			badHosts = append(badHosts, ", "...)
+			bad++
 
 			continue
 
