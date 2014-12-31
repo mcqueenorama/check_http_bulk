@@ -277,20 +277,20 @@ func main() {
 
 		if ratio >= *crit {
 			status = "Critical"
-			rv = 1
+			rv = 2
 		} else if ratio >= *warn {
 			status = "Warning"
-			rv = 2
+			rv = 1
 		}
 
 	} else {
 
 		if bad >= *crit {
 			status = "Critical"
-			rv = 1
+			rv = 2
 		} else if bad >= *warn {
 			status = "Warning"
-			rv = 2
+			rv = 1
 		}
 
 	}
